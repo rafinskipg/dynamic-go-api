@@ -19,7 +19,7 @@ func main() {
 		id := strings.TrimPrefix(r.URL.Path, "/smol/")
 		id = strings.Split(id, ".")[0]
 		addons := r.URL.Query().Get("addons")
-
+		log.Printf("Generating image: id: %s, addons: %s", id, addons)
 		// Load the base image
 		baseImage, err := LoadImage(fmt.Sprintf("/images/smols/%s.png", id))
 		if err != nil {
@@ -43,14 +43,14 @@ func main() {
 			}
 
 			// Compose the final image
-			finalImage := ComposeImages(baseImage, addonImages)
+			finalImage = ComposeImages(baseImage, addonImages)
 
 		} else {
 			finalImage = baseImage
 
 		}
 		// Write the final image to the response
-		err = WriteImage(w, baseImage)
+		err = WriteImage(w, finalImage)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -83,17 +83,17 @@ func LoadImage(filepath string) (image.Image, error) {
 
 // ComposeImages composes multiple images into a single image
 func ComposeImages(baseImage image.Image, addonImages []image.Image) image.Image {
-	g := gift.New(gift.Overlay(gift.Rectangle(baseImage.Bounds())))
+	dstImage := image.NewRGBA(baseImage.Bounds())
+	g := gift.New()
+
+	g.Draw(dstImage, baseImage)
 
 	for _, addonImage := range addonImages {
 		resizedAddonImage := resize.Resize(uint(baseImage.Bounds().Dx()), 0, addonImage, resize.Lanczos3)
-		g = gift.New(gift.Overlay(gift.Rectangle(resizedAddonImage.Bounds())), g)
+		g.Draw(dstImage, resizedAddonImage)
 	}
 
-	finalImage := image.NewNRGBA(g.Bounds(baseImage.Bounds()))
-	g.Draw(finalImage, baseImage)
-
-	return finalImage
+	return dstImage
 }
 
 func WriteImage(w http.ResponseWriter, img image.Image) error {
