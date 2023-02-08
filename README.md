@@ -14,9 +14,9 @@ The following packages are required to run the API:
 
 ## Usage
 
-The API is invoked by sending a GET request to the `/smol/` endpoint with the desired image id and addons specified in the URL. The `id` represents the base image, and the `addons` represent the images to be added to the base image. The response will be a PNG image containing the manipulated image.
+The API is invoked by sending a GET request to the `/api/smol/` endpoint with the desired image id and addons specified in the URL. The `id` represents the base image, and the `addons` represent the images to be added to the base image. The response will be a PNG image containing the manipulated image.
 
-`GET /smol/?id=1&addons=2,3`
+`GET /api/smol/1&addons=2,3`
 
 This request will return an image with the base image 1 and addons 2 and 3 applied.
 
