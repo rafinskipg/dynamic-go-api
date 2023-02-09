@@ -29,7 +29,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// imagePath := filepath.Join(packagePath, fmt.Sprintf("%s.png", id))
 
 	// Load the base image
-	baseImage, err := LoadImage("/images/smols/" + id + ".png")
+	baseImage, err := LoadImage("images/smols/" + id + ".png")
 	if err != nil {
 		log.Printf("Error loading base image: %s", err)
 		http.Error(w, "Error loading base image", http.StatusInternalServerError)
@@ -45,7 +45,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		//addonPackagePath, _ := filepath.Abs("./images/addons/")
 		for _, addon := range addonList {
 			// addonImagePath := filepath.Join(addonPackagePath, fmt.Sprintf("%s.png", addon))
-			addonImagePath := "/images/addons/" + addon + ".png"
+			addonImagePath := "images/addons/" + addon + ".png"
 			addonImage, err := LoadImage(addonImagePath)
 			if err != nil {
 				http.Error(w, "Error loading addon image", http.StatusInternalServerError)
