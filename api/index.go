@@ -1,13 +1,12 @@
 package handler
 
 import (
+	"embed"
 	"image"
 	"image/png"
 	"log"
 	"net/http"
 	"strings"
-
-	"embed"
 
 	"github.com/disintegration/gift"
 	"github.com/nfnt/resize"

@@ -14,9 +14,9 @@ The following packages are required to run the API:
 
 ## Usage
 
-The API is invoked by sending a GET request to the `/api/smol/` endpoint with the desired image id and addons specified in the URL. The `id` represents the base image, and the `addons` represent the images to be added to the base image. The response will be a PNG image containing the manipulated image.
+The API is invoked by sending a GET request to the `/api/smol` endpoint with the desired image id and addons specified in the URL. The `id` represents the base image, and the `addons` represent the images to be added to the base image. The response will be a PNG image containing the manipulated image.
 
-`GET /api/smol/1&addons=2,3`
+`GET /api/smol?id=1&addons=2,3`
 
 This request will return an image with the base image 1 and addons 2 and 3 applied.
 
@@ -28,12 +28,10 @@ To run the API locally, clone the repository and navigate to the root directory.
 
 The API will start on localhost:8080 by default.
 
+
 ## Deploying to a Cloud Service
 
-To deploy the API to a cloud service, such as Google Cloud Platform, follow these steps:
 
-1. Create a new project in the Google Cloud Console.
-2. Build and push a Docker image of the API to Google Container Registry.
-3. Deploy the Docker image to Google App Engine.
+We are using Vercel's GO feature. It requires having a "api" subfolder with an index.go file inside. 
 
-Detailed instructions on these steps can be found in the Google Cloud documentation.
+Please check https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/go#advanced-go-usage
