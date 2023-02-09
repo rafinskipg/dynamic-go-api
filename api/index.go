@@ -16,8 +16,7 @@ import (
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// Extract the id and addons from the URL
-	id := strings.TrimPrefix(r.URL.Path, "/api/smol/")
-	id = strings.Split(id, ".")[0]
+	id := r.URL.Query().Get("id")
 	addons := r.URL.Query().Get("addons")
 	log.Printf("Generating image: id: %s, addons: %s", id, addons)
 
