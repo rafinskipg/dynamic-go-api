@@ -18,6 +18,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// Extract the id and addons from the URL
 	id := r.URL.Query().Get("id")
 	addons := r.URL.Query().Get("addons")
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	log.Printf(exPath)
+
 	log.Printf("Generating image: id: %s, addons: %s", id, addons)
 
 	packagePath, _ := filepath.Abs("./images/smols/")
