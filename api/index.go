@@ -20,7 +20,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	addons := r.URL.Query().Get("addons")
 	log.Printf("Generating image: id: %s, addons: %s", id, addons)
 
-	packagePath, _ := filepath.Abs("./images/smols/")
+	packagePath, _ := filepath.Abs("../images/smols/")
 	imagePath := filepath.Join(packagePath, fmt.Sprintf("%s.png", id))
 
 	// Load the base image
@@ -37,7 +37,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if addons != "" {
 		addonList := strings.Split(addons, ",")
-		addonPackagePath, _ := filepath.Abs("./images/addons/")
+		addonPackagePath, _ := filepath.Abs("../images/addons/")
 		for _, addon := range addonList {
 			addonImagePath := filepath.Join(addonPackagePath, fmt.Sprintf("%s.png", addon))
 
