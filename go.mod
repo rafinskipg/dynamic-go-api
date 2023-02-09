@@ -1,6 +1,6 @@
 module smolage/images
 
-go 1.20
+go 1.19
 
 require (
 	github.com/disintegration/gift v1.2.1 // indirect
