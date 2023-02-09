@@ -1,37 +1,35 @@
 package handler
 
 import (
-	"fmt"
 	"image"
 	"image/png"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
+
+	"embed"
 
 	"github.com/disintegration/gift"
 	"github.com/nfnt/resize"
 )
 
+// content holds our static web server content.
+//
+//go:embed images/*
+var content embed.FS
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// Extract the id and addons from the URL
 	id := r.URL.Query().Get("id")
 	addons := r.URL.Query().Get("addons")
-	ex, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	exPath := filepath.Dir(ex)
-	log.Printf(exPath)
 
 	log.Printf("Generating image: id: %s, addons: %s", id, addons)
 
-	packagePath, _ := filepath.Abs("./images/smols/")
-	imagePath := filepath.Join(packagePath, fmt.Sprintf("%s.png", id))
+	// packagePath, _ := filepath.Abs("./api/images/smols/")
+	// imagePath := filepath.Join(packagePath, fmt.Sprintf("%s.png", id))
 
 	// Load the base image
-	baseImage, err := LoadImage(imagePath)
+	baseImage, err := LoadImage("/images/smols/" + id + ".png")
 	if err != nil {
 		log.Printf("Error loading base image: %s", err)
 		http.Error(w, "Error loading base image", http.StatusInternalServerError)
@@ -44,10 +42,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if addons != "" {
 		addonList := strings.Split(addons, ",")
-		addonPackagePath, _ := filepath.Abs("./images/addons/")
+		//addonPackagePath, _ := filepath.Abs("./images/addons/")
 		for _, addon := range addonList {
-			addonImagePath := filepath.Join(addonPackagePath, fmt.Sprintf("%s.png", addon))
-
+			// addonImagePath := filepath.Join(addonPackagePath, fmt.Sprintf("%s.png", addon))
+			addonImagePath := "/images/addons/" + addon + ".png"
 			addonImage, err := LoadImage(addonImagePath)
 			if err != nil {
 				http.Error(w, "Error loading addon image", http.StatusInternalServerError)
@@ -75,7 +73,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // LoadImage loads an image file from disk into memory
 func LoadImage(filepath string) (image.Image, error) {
-	f, err := os.Open(filepath)
+	// f, err := os.Open(filepath)
+	f, err := content.Open(filepath)
+
 	if err != nil {
 		return nil, err
 	}
