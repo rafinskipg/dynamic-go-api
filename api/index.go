@@ -14,65 +14,57 @@ import (
 	"github.com/nfnt/resize"
 )
 
-func Handler() {
-	http.HandleFunc("/api/smol/", func(w http.ResponseWriter, r *http.Request) {
-		// Extract the id and addons from the URL
-		id := strings.TrimPrefix(r.URL.Path, "/api/smol/")
-		id = strings.Split(id, ".")[0]
-		addons := r.URL.Query().Get("addons")
-		log.Printf("Generating image: id: %s, addons: %s", id, addons)
+func Handler(w http.ResponseWriter, r *http.Request) {
+	// Extract the id and addons from the URL
+	id := strings.TrimPrefix(r.URL.Path, "/api/smol/")
+	id = strings.Split(id, ".")[0]
+	addons := r.URL.Query().Get("addons")
+	log.Printf("Generating image: id: %s, addons: %s", id, addons)
 
-		packagePath, _ := filepath.Abs("./images/smols/")
-		imagePath := filepath.Join(packagePath, fmt.Sprintf("%s.png", id))
+	packagePath, _ := filepath.Abs("./images/smols/")
+	imagePath := filepath.Join(packagePath, fmt.Sprintf("%s.png", id))
 
-		// Load the base image
-		baseImage, err := LoadImage(imagePath)
-		if err != nil {
-			log.Printf("Error loading base image: %s", err)
-			http.Error(w, "Error loading base image", http.StatusInternalServerError)
-			return
-		}
-
-		// Load the addons
-		var addonImages []image.Image
-		var finalImage image.Image
-
-		if addons != "" {
-			addonList := strings.Split(addons, ",")
-			addonPackagePath, _ := filepath.Abs("./images/addons/")
-			for _, addon := range addonList {
-				addonImagePath := filepath.Join(addonPackagePath, fmt.Sprintf("%s.png", addon))
-
-				addonImage, err := LoadImage(addonImagePath)
-				if err != nil {
-					http.Error(w, "Error loading addon image", http.StatusInternalServerError)
-					return
-				}
-				addonImages = append(addonImages, addonImage)
-			}
-
-			// Compose the final image
-			finalImage = ComposeImages(baseImage, addonImages)
-
-		} else {
-			finalImage = baseImage
-
-		}
-		// Write the final image to the response
-		err = WriteImage(w, finalImage)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-	})
-
-	log.Printf("Listening on port 8080")
-	err := http.ListenAndServe(":8080", nil)
+	// Load the base image
+	baseImage, err := LoadImage(imagePath)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error loading base image: %s", err)
+		http.Error(w, "Error loading base image", http.StatusInternalServerError)
+		return
 	}
+
+	// Load the addons
+	var addonImages []image.Image
+	var finalImage image.Image
+
+	if addons != "" {
+		addonList := strings.Split(addons, ",")
+		addonPackagePath, _ := filepath.Abs("./images/addons/")
+		for _, addon := range addonList {
+			addonImagePath := filepath.Join(addonPackagePath, fmt.Sprintf("%s.png", addon))
+
+			addonImage, err := LoadImage(addonImagePath)
+			if err != nil {
+				http.Error(w, "Error loading addon image", http.StatusInternalServerError)
+				return
+			}
+			addonImages = append(addonImages, addonImage)
+		}
+
+		// Compose the final image
+		finalImage = ComposeImages(baseImage, addonImages)
+
+	} else {
+		finalImage = baseImage
+
+	}
+	// Write the final image to the response
+	err = WriteImage(w, finalImage)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 }
 
 // LoadImage loads an image file from disk into memory
