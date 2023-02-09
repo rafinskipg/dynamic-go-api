@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ import (
 	"github.com/nfnt/resize"
 )
 
-func main() {
+func Handler() {
 	http.HandleFunc("/api/smol/", func(w http.ResponseWriter, r *http.Request) {
 		// Extract the id and addons from the URL
 		id := strings.TrimPrefix(r.URL.Path, "/api/smol/")
